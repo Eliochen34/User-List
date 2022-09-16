@@ -114,6 +114,16 @@ function getUsersByPage(page) {
   return data.slice(startIndex, startIndex + USERS_PER_PAGE)
 }
 
+function changeStyleAfterShow(){
+  if (favoriteList.length === 0) return
+  // const data = filteredUsers.length ? filteredUsers : users
+  // let result = data.filter(item => {
+  //   return favoriteList.indexOf(item) > -1
+  // })
+  console.log(favoriteList)
+  
+}
+
 
 // 點擊使用者的照片後，呼叫showUserModal這個function，目的是將modal內顯示的資料置換成該使用者的資料
 allUsersDataPanel.addEventListener("click", function (event) {
@@ -159,6 +169,7 @@ axios
   .then((response) => {
     users.push(...response.data.results);
     displayUsers(getUsersByPage(1));
+    changeStyleAfterShow()
     renderPaginator(users.length)
   })
   .catch((err) => console.log(err));
