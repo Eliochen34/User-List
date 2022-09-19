@@ -15,22 +15,47 @@ let favoriteList = JSON.parse(localStorage.getItem('favoriteUsers')) || []
 
 // 定義一個function顯示所有user
 function displayUsers(data) {
+  // 來回確認要用甚麼方式來比對data是否有在favoriteList裡面
+  // console.log(JSON.stringify(favoriteList[0]) === JSON.stringify(data[0]))
+  // console.log(favoriteList[0] === data[0])
+  // console.log(JSON.stringify(favoriteList).includes(JSON.stringify(data[0])))
+  // console.log(favoriteList.includes(data[0]))
+  
+  // 思路: 如果要秀出的資料有在favoriteList裡面，則修改button的style
   let htmlContent = "";
   data.forEach((item) => {
-    htmlContent += `
-    <div id="userInfo" class="col-sm-3 mb-3">
-      <div class="card border-secondary">
-        <img src="${item.avatar}" class="card-img-top" alt="User's picture" data-id="${item.id}" data-id="${item.id}">
-        <div class="card-body">
-          <h6 class="user-name">${item.name + " " + item.surname}</h6>
-        </div>
-        <div class="card-footer">
-          <button class="btn btn-primary btn-show-user" data-id="${item.id}" data-bs-toggle="modal" data-bs-target="#user-modal">More</button>
-          <button class="btn btn-info btn-add-favorite" data-id="${item.id}">+</button>
-        </div>
-      </div>  
-    </div>  
-  `;
+    if (JSON.stringify(favoriteList).includes(JSON.stringify(item))) {
+      htmlContent += `
+        <div id="userInfo" class="col-sm-3 mb-3">
+          <div class="card border-secondary">
+            <img src="${item.avatar}" class="card-img-top" alt="User's picture" data-id="${item.id}" data-id="${item.id}">
+            <div class="card-body">
+              <h6 class="user-name">${item.name + " " + item.surname}</h6>
+            </div>
+            <div class="card-footer">
+              <button class="btn btn-primary btn-show-user" data-id="${item.id}" data-bs-toggle="modal" data-bs-target="#user-modal">More</button>
+              <button class="btn btn-danger btn-remove-favorite" data-id="${item.id}">X</button>
+            </div>
+          </div>  
+        </div>  
+      `
+    } else {
+      htmlContent += `
+        <div id="userInfo" class="col-sm-3 mb-3">
+          <div class="card border-secondary">
+            <img src="${item.avatar}" class="card-img-top" alt="User's picture" data-id="${item.id}" data-id="${item.id}">
+            <div class="card-body">
+              <h6 class="user-name">${item.name + " " + item.surname}</h6>
+            </div>
+            <div class="card-footer">
+              <button class="btn btn-primary btn-show-user" data-id="${item.id}" data-bs-toggle="modal" data-bs-target="#user-modal">More</button>
+              <button class="btn btn-info btn-add-favorite" data-id="${item.id}">+</button>
+            </div>
+          </div>  
+        </div>  
+      `
+    }
+    ;
   });
   allUsersDataPanel.innerHTML = htmlContent;
 }
@@ -169,7 +194,6 @@ axios
   .then((response) => {
     users.push(...response.data.results);
     displayUsers(getUsersByPage(1));
-    changeStyleAfterShow()
     renderPaginator(users.length)
   })
   .catch((err) => console.log(err));
